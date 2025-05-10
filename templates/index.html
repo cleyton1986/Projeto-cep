@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Busca de Estacionamentos por CEP</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      h1 {
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+      .form-group {
+        margin-bottom: 20px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block;
+        margin: 20px auto;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      #resultados {
+        margin-top: 30px;
+        display: none;
+      }
+      .endereco {
+        background-color: #f9f9f9;
+        padding: 15px;
+        border-radius: 4px;
+        margin-bottom: 20px;
+      }
+      .estacionamento {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 15px;
+        margin-bottom: 10px;
+      }
+      .estacionamento h3 {
+        margin-top: 0;
+        color: #333;
+      }
+      .info {
+        display: flex;
+        justify-content: space-between;
+        flex-wrap: wrap;
+      }
+      .info span {
+        margin-right: 10px;
+        background-color: #e7f3ff;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      .loader {
+        border: 5px solid #f3f3f3;
+        border-top: 5px solid #3498db;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 2s linear infinite;
+        margin: 20px auto;
+        display: none;
+      }
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+      .error {
+        color: red;
+        font-weight: bold;
+        text-align: center;
+        display: none;
+      }
+      .fonte {
+        text-align: right;
+        font-style: italic;
+        color: #666;
+        margin-top: 10px;
+      }
+      .nav {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .nav a {
+        color: #4caf50;
+        text-decoration: none;
+        margin: 0 15px;
+      }
+      .nav a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Busca de Estacionamentos por CEP</h1>
+
+      <div class="form-group">
+        <label for="cep">Digite o CEP:</label>
+        <input type="text" id="cep" placeholder="Ex: 01001-000" maxlength="9" />
+      </div>
+
+      <button onclick="buscarCEP()">Buscar Estacionamentos</button>
+
+      <div class="loader" id="loader"></div>
+      <div class="error" id="error"></div>
+
+      <div id="resultados">
+        <h2>Resultados:</h2>
+
+        <div class="endereco" id="endereco">
+          <!-- Dados do endereço serão inseridos aqui -->
+        </div>
+
+        <h2>Estacionamentos Próximos:</h2>
+        <div id="estacionamentos">
+          <!-- Lista de estacionamentos será inserida aqui -->
+        </div>
+
+        <div class="fonte" id="fonte"></div>
+      </div>
+
+      <div class="nav">
+        <a href="/comparacao-economia">Ver Comparação de Economia de Dados</a>
+      </div>
+    </div>
+
+    <script>
+      function buscarCEP() {
+        // Limpar resultados anteriores
+        document.getElementById("resultados").style.display = "none";
+        document.getElementById("error").style.display = "none";
+        document.getElementById("loader").style.display = "block";
+
+        // Obter CEP digitado e limpar formatação
+        let cep = document.getElementById("cep").value.replace(/\D/g, "");
+
+        // Validar CEP
+        if (cep.length !== 8) {
+          document.getElementById("loader").style.display = "none";
+          document.getElementById("error").innerText =
+            "CEP inválido. Digite um CEP com 8 dígitos.";
+          document.getElementById("error").style.display = "block";
+          return;
+        }
+
+        // Fazer a requisição para a API
+        fetch(`/api/consulta-cep/${cep}`)
+          .then((response) => {
+            if (!response.ok) {
+              throw new Error("CEP não encontrado");
+            }
+            return response.json();
+          })
+          .then((data) => {
+            // Exibir os resultados
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("resultados").style.display = "block";
+
+            // Exibir dados do endereço
+            const endereco = data.dados;
+            document.getElementById("endereco").innerHTML = `
+                        <p><strong>Logradouro:</strong> ${endereco.logradouro}</p>
+                        <p><strong>Bairro:</strong> ${endereco.bairro}</p>
+                        <p><strong>Cidade:</strong> ${endereco.localidade}</p>
+                        <p><strong>UF:</strong> ${endereco.uf}</p>
+                    `;
+
+            // Exibir estacionamentos
+            const estacionamentosDiv =
+              document.getElementById("estacionamentos");
+            estacionamentosDiv.innerHTML = "";
+
+            if (data.estacionamentos.length === 0) {
+              estacionamentosDiv.innerHTML =
+                "<p>Nenhum estacionamento encontrado nesta região.</p>";
+            } else {
+              data.estacionamentos.forEach((estacionamento) => {
+                estacionamentosDiv.innerHTML += `
+                                <div class="estacionamento">
+                                    <h3>${estacionamento.nome}</h3>
+                                    <div class="info">
+                                        <span>Distância: ${estacionamento.distancia}</span>
+                                        <span>Vagas disponíveis: ${estacionamento.vagas_disponiveis}</span>
+                                        <span>Preço/hora: ${estacionamento.preco_hora}</span>
+                                    </div>
+                                </div>
+                            `;
+              });
+            }
+
+            // Exibir fonte dos dados
+            document.getElementById("fonte").innerText = `Dados obtidos de: ${
+              data.fonte === "cache"
+                ? "Cache do sistema (resposta rápida)"
+                : "API ViaCEP (nova consulta)"
+            }`;
+          })
+          .catch((error) => {
+            document.getElementById("loader").style.display = "none";
+            document.getElementById("error").innerText = error.message;
+            document.getElementById("error").style.display = "block";
+          });
+      }
+
+      // Adicionar máscara para o campo de CEP
+      document.getElementById("cep").addEventListener("input", function (e) {
+        let value = e.target.value.replace(/\D/g, "");
+        if (value.length > 5) {
+          value = value.substring(0, 5) + "-" + value.substring(5, 8);
+        }
+        e.target.value = value;
+      });
+    </script>
+  </body>
+</html>
