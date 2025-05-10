@@ -14,6 +14,18 @@
 
 Esta aplicação é uma demonstração do projeto de intervenção para a situação-problema 3, onde desenvolvemos uma API intermediária que consome a API ViaCEP, filtra apenas os dados essenciais e simula a localização de estacionamentos próximos.
 
+## Versão Online de Demonstração
+
+Uma versão funcional desta aplicação está disponível online:
+
+**URL:** [https://projeto-cep-9mi1.onrender.com](https://projeto-cep-9mi1.onrender.com)
+
+![Banner do Projeto](./assets/video-cep.gif)
+
+> **Nota:** Por estar hospedada em um plano gratuito do Render, a aplicação pode levar até 30 segundos para carregar no primeiro acesso, pois o serviço "adormece" após períodos de inatividade.
+
+Você pode testar a aplicação com CEPs brasileiros válidos como 01001000 (Praça da Sé, São Paulo) ou 20031170 (Centro, Rio de Janeiro).
+
 ## Estrutura do Projeto
 
 O projeto consiste em:
@@ -34,9 +46,19 @@ O projeto consiste em:
 
 ## Como Executar
 
-### Opção 1: Clonar o repositório GitHub
+### Opção 1: Acessar a Versão Online
 
-A forma mais simples de executar o projeto é clonar o repositório:
+A maneira mais simples de testar a aplicação é acessar a versão online:
+
+```
+https://projeto-cep-9mi1.onrender.com
+```
+
+Note que o primeiro acesso pode demorar até 30 segundos para carregar, pois o serviço está hospedado em um plano gratuito do Render que "adormece" após períodos de inatividade.
+
+### Opção 2: Clonar o repositório GitHub
+
+Se você preferir executar localmente, clone o repositório:
 
 ```
 git clone https://github.com/cleyton1986/Projeto-cep.git
@@ -113,6 +135,13 @@ Alternativamente, você pode configurar o projeto manualmente:
 3. Adição de filtros para os estacionamentos (preço, distância, etc.)
 4. Autenticação para proteger a API
 5. Monitoramento e limite de requisições (rate limiting)
+
+## Implantação em Produção
+
+Para implantar esta aplicação em um ambiente de produção, consulte os seguintes guias:
+
+- [Instruções para Implantação no Render](./instruções-render.md) - Para implantar o projeto no serviço de hospedagem Render
+- [Documentação do Flask sobre implantação em produção](https://flask.palletsprojects.com/en/2.3.x/deploying/) - Para outras opções de implantação
 
 ## Relação com o Projeto de Intervenção
 
