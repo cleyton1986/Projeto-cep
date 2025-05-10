@@ -1,0 +1,144 @@
+<!-- templates/comparacao.html -->
+<!DOCTYPE html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Comparação de Economia de Dados</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+      .container {
+        max-width: 800px;
+        margin: 0 auto;
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      h1,
+      h2 {
+        color: #333;
+      }
+      .comparison {
+        display: flex;
+        margin-top: 30px;
+        gap: 20px;
+      }
+      .json-box {
+        flex: 1;
+        padding: 15px;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        overflow: auto;
+        max-height: 400px;
+      }
+      .original {
+        border-left: 5px solid #ff6b6b;
+      }
+      .optimized {
+        border-left: 5px solid #4caf50;
+      }
+      pre {
+        margin: 0;
+        white-space: pre-wrap;
+      }
+      .stats {
+        margin-top: 30px;
+        background-color: #e7f3ff;
+        padding: 20px;
+        border-radius: 5px;
+      }
+      .stat-item {
+        margin-bottom: 10px;
+      }
+      .economy {
+        font-size: 24px;
+        font-weight: bold;
+        color: #4caf50;
+      }
+      .nav {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+      }
+      .nav a {
+        color: #4caf50;
+        text-decoration: none;
+        margin: 0 15px;
+      }
+      .nav a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Comparação de Economia de Dados</h1>
+      <p>
+        Esta página demonstra a economia de dados obtida ao filtrar apenas as
+        informações essenciais da API ViaCEP.
+      </p>
+
+      <div class="comparison">
+        <div class="json-box original">
+          <h2>Resposta Original da API</h2>
+          <pre id="json-original"></pre>
+        </div>
+
+        <div class="json-box optimized">
+          <h2>Resposta Otimizada</h2>
+          <pre id="json-optimized"></pre>
+        </div>
+      </div>
+
+      <div class="stats" id="stats">
+        <!-- Estatísticas serão inseridas aqui -->
+      </div>
+
+      <div class="nav">
+        <a href="/">Voltar para Busca de Estacionamentos</a>
+      </div>
+    </div>
+
+    <script>
+      // Carregar dados de comparação
+      fetch("/api/comparacao")
+        .then((response) => response.json())
+        .then((data) => {
+          // Exibir JSON original
+          document.getElementById("json-original").textContent = JSON.stringify(
+            data.resposta_original,
+            null,
+            2
+          );
+
+          // Exibir JSON otimizado
+          document.getElementById("json-optimized").textContent =
+            JSON.stringify(data.resposta_filtrada, null, 2);
+
+          // Exibir estatísticas
+          document.getElementById("stats").innerHTML = `
+                    <div class="stat-item">
+                        <strong>Tamanho da resposta original:</strong> ${data.tamanho_original} bytes
+                    </div>
+                    <div class="stat-item">
+                        <strong>Tamanho da resposta otimizada:</strong> ${data.tamanho_filtrado} bytes
+                    </div>
+                    <div class="stat-item">
+                        <strong>Economia de dados:</strong> <span class="economy">${data.economia_percentual}%</span>
+                    </div>
+                    <p>Esta otimização é especialmente importante para aplicativos móveis, onde a economia de dados
+                    pode significar melhor desempenho, menor consumo de bateria e menos custos para o usuário.</p>
+                `;
+        })
+        .catch((error) => {
+          console.error("Erro ao carregar dados de comparação:", error);
+        });
+    </script>
+  </body>
+</html>
