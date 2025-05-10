@@ -136,13 +136,6 @@ Alternativamente, você pode configurar o projeto manualmente:
 4. Autenticação para proteger a API
 5. Monitoramento e limite de requisições (rate limiting)
 
-## Implantação em Produção
-
-Para implantar esta aplicação em um ambiente de produção, consulte os seguintes guias:
-
-- [Instruções para Implantação no Render](./instruções-render.md) - Para implantar o projeto no serviço de hospedagem Render
-- [Documentação do Flask sobre implantação em produção](https://flask.palletsprojects.com/en/2.3.x/deploying/) - Para outras opções de implantação
-
 ## Relação com o Projeto de Intervenção
 
 Esta aplicação demonstra os conceitos apresentados no projeto de intervenção para a situação-problema 3:
